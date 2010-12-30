@@ -14,10 +14,11 @@
 char bspace[1024];
 buffer b = BUFFER_INIT(buffer_unixwrite,1,bspace,sizeof bspace);
 
-char status[18];
+char status[22];
 char strnum[FMT_ULONG];
 
 unsigned long pid;
+unsigned long wstat;
 unsigned char normallyup;
 unsigned char want;
 unsigned char paused;
@@ -92,6 +93,11 @@ void doit(char *dir)
   paused = status[16];
   want = status[17];
 
+  wstat = (unsigned char) status[21];
+  wstat <<= 8; wstat += (unsigned char) status[20];
+  wstat <<= 8; wstat += (unsigned char) status[19];
+  wstat <<= 8; wstat += (unsigned char) status[18];
+
   tai_unpack(status,&when);
   tai_now(&now);
   if (tai_less(&now,&when)) when = now;
@@ -118,6 +124,9 @@ void doit(char *dir)
     buffer_puts(&b,", want up");
   if (pid && (want == 'd'))
     buffer_puts(&b,", want down");
+
+  buffer_puts(&b,", last exit ");
+  buffer_put(&b,strnum,fmt_ulong(strnum,wstat));
 }
 
 int main(int argc,char **argv)

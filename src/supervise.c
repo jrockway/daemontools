@@ -32,7 +32,7 @@ int flagwantup = 1;
 int pid = 0; /* 0 means down */
 int flagpaused; /* defined if(pid) */
 
-char status[18];
+char status[22];
 
 void pidchange(void)
 {
@@ -47,6 +47,16 @@ void pidchange(void)
   status[13] = u; u >>= 8;
   status[14] = u; u >>= 8;
   status[15] = u;
+}
+
+void statuschange(int wstat)
+{
+  unsigned long u;
+  u = (unsigned long) wstat;
+  status[18] = u; u >>= 8;
+  status[19] = u; u >>= 8;
+  status[20] = u; u >>= 8;
+  status[21] = u;
 }
 
 void announce(void)
@@ -146,6 +156,7 @@ void doit(void)
       if (r == pid) {
 	pid = 0;
 	pidchange();
+        statuschange(wstat);
 	announce();
 	if (flagexit) return;
 	if (flagwant && flagwantup) trystart();

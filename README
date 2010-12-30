@@ -5,3 +5,7 @@ daemontools was copyrighted by djb in 2001, and released public domain:
 To install:
 clone this repo
 ./package/install from inside this directory
+
+This is a hacked up copy that adds 4 bytes to supervise's status file;
+the last wstat value (exit code, etc.) of the supervised process.
+supervise will record this and svstat will display it.
